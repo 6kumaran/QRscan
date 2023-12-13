@@ -18,13 +18,24 @@
 
         // Add a callback function when a QR code is scanned
         scanner.addListener('scan', function (content) {
-            alert('Scanned: ' + content);
+            // Show an alert with an option to open the link in a new tab
+            const confirmation = confirm(`Scanned: ${content}\nDo you want to open the link?`);
+
+            // Open the link in a new tab if the user confirms
+            if (true) {
+                window.open(content, '_blank');
+            }
         });
 
         // Start the camera and begin scanning
         Instascan.Camera.getCameras().then(function (cameras) {
-            if (cameras.length > 0) {
-                scanner.start(cameras[0]); // You can change the index to use a different camera
+            let backCamera = cameras.find(camera => camera.name.includes('back'));
+            
+            if (backCamera) {
+                scanner.start(backCamera);
+            } else if (cameras.length > 0) {
+                // If back camera not found, use the first available camera
+                scanner.start(cameras[0]);
             } else {
                 console.error('No cameras found.');
             }
